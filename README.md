@@ -1,4 +1,3 @@
-```markdown
 # Past Papers Repository
 
 This repository contains organised AQA Computer Science past papers and supporting materials for both **AS Level** and **A Level**.
