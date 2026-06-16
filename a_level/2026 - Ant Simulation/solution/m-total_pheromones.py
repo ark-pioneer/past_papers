@@ -23,10 +23,10 @@ def DisplayMenu():
     print("> ", end='')
 
 #  inside the while Choice != "9": loop in Main():
-elif Choice == "6":
-    StartRow, StartColumn = GetCellReference()
-    EndRow, EndColumn = GetCellReference()
-    Total = ThisSimulation.GetTotalPheromoneStrengthInArea(
-        StartRow, StartColumn, EndRow, EndColumn
-    )
-    print(f"Total pheromone strength in area: {Total}\n")
+# elif Choice == "6":
+#     StartRow, StartColumn = GetCellReference()
+#     EndRow, EndColumn = GetCellReference()
+#     Total = ThisSimulation.GetTotalPheromoneStrengthInArea(
+#         StartRow, StartColumn, EndRow, EndColumn
+#     )
+#     print(f"Total pheromone strength in area: {Total}\n")
