@@ -35,8 +35,11 @@ class Breakthrough():
                     print(self.__Sequence.GetCardDisplay())
                     print(self.__Hand.GetCardDisplay())
                     MenuChoice = self.__GetChoice()
-                    if MenuChoice == "D":
-                        print(self.__Discard.GetCardDisplay())
+                    if MenuChoice in ["D", "V"]:
+                        if self.__Discard.GetNumberOfCards() == 0:
+                            print("Discard pile is empty")
+                        else:
+                            print(self.__Discard.GetCardDisplay())
                     elif MenuChoice == "U":
                         CardChoice  = self.__GetCardChoice()
                         DiscardOrPlay = self.__GetDiscardOrPlayChoice()
@@ -207,7 +210,7 @@ class Breakthrough():
 
     def __GetChoice(self):
         print()
-        Choice = input("(D)iscard inspect, (U)se card:> ").upper()
+        Choice = input("(D)iscard inspect, (V)iew Discard pile, (U)se card:> ").upper()
         return Choice
     
     def __AddDifficultyCardsToDeck(self):
