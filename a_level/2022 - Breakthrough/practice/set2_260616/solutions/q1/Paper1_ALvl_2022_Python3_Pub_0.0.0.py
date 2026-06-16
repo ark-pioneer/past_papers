@@ -284,13 +284,15 @@ class Lock():
 
     def GetLockDetails(self):
         LockDetails = "\n" + "CURRENT LOCK" + "\n" + "------------" + "\n"
+        UnmetChallenges = 0
         for C in self._Challenges:
             if C.GetMet():
                 LockDetails += "Challenge met: "
             else:
+                UnmetChallenges += 1
                 LockDetails += "Not met:       "
             LockDetails += self.__ConvertConditionToString(C.GetCondition()) + "\n"
-        LockDetails += "\n"
+        LockDetails += f"------------\nUnmet challenges: {UnmetChallenges}" + "\n"
         return LockDetails
 
     def GetLockSolved(self):
