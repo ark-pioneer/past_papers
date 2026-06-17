@@ -72,14 +72,38 @@ class Breakthrough():
         if Choice == "L":
             if not self.__LoadGame("game1.txt"):
                 self.__GameOver = True
-        else:
+        else:         
             self.__CreateStandardDeck()
             self.__Deck.Shuffle()
             for Count in range(5):
                 self.__MoveCard(self.__Deck, self.__Hand, self.__Deck.GetCardNumberAt(0))
             self.__AddDifficultyCardsToDeck()
             self.__Deck.Shuffle()
-            self.__CurrentLock = self.__GetRandomLock()
+
+            NewGameType = input("Enter R to start a standard new game, or P for a practice lock:> ").upper()
+            if NewGameType == "R":
+                self.__CurrentLock = self.__GetRandomLock()
+            elif NewGameType == "P":
+                while True:
+                    print("Available Locks:")
+                    AvailableLocks = [f"{i+1}: {self.__Locks[i].GetLockDetails()}" for i in range(len(self.__Locks))]
+                    for lock in AvailableLocks:
+                        print(lock)
+                    LockNumber = input("Choose Lock Number:>")
+                    try:
+                        LockIndex = int(LockNumber)-1
+                        if LockIndex in range(len(self.__Locks)):
+                            self.__CurrentLock = self.__Locks[LockIndex]
+                            break
+                        else:
+                            raise ValueError(f"{LockNumber} not an available lock number")
+                    except ValueError as e:
+                        print(e)
+                        print("please try again")
+
+                
+
+
     
     def __PlayCardToSequence(self, CardChoice):
         if self.__Sequence.GetNumberOfCards() > 0:
