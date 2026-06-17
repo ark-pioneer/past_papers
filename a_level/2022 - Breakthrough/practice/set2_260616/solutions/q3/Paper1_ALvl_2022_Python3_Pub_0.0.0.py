@@ -11,6 +11,8 @@ def Main():
     ThisGame.PlayGame()
 
 class Breakthrough():
+    HINT_COST = 3
+
     def __init__(self):
         self.__Deck = CardCollection("DECK")
         self.__Hand = CardCollection("HAND")
@@ -45,12 +47,26 @@ class Breakthrough():
                             self.__GetCardFromDeck(CardChoice)
                         elif DiscardOrPlay == "P":
                             self.__PlayCardToSequence(CardChoice)
+                    elif MenuChoice == "H":
+                        self.__ShowHint()
                     if self.__CurrentLock.GetLockSolved():
                         self.__LockSolved = True
                         self.__ProcessLockSolved()
                 self.__GameOver = self.__CheckIfPlayerHasLost()
         else:
             print("No locks in file.")
+
+    def __ShowHint(self):
+        print("Hint: ", end="")
+        if self.__CurrentLock.GetLockSolved():
+            print("All Challenges already met!")
+        else:
+            unmetChallenge = self.__CurrentLock.GetUnmetChallenge()
+            print(f"Required cards for an unmet challenge: {unmetChallenge}")
+            OldScore = self.__Score
+            self.__Score = max(0, self.__Score - Breakthrough.HINT_COST)
+            print(f"Score reduced from {OldScore} to {self.__Score}")
+            print("")
 
     def __ProcessLockSolved(self):
         self.__Score += 10
@@ -207,7 +223,7 @@ class Breakthrough():
 
     def __GetChoice(self):
         print()
-        Choice = input("(D)iscard inspect, (U)se card:> ").upper()
+        Choice = input("(D)iscard inspect, Get (H)int, (U)se card:> ").upper()
         return Choice
     
     def __AddDifficultyCardsToDeck(self):
@@ -281,6 +297,12 @@ class Lock():
             ConditionAsString += C[Pos] + ", "
         ConditionAsString += C[len(C) - 1]
         return ConditionAsString
+
+    def GetUnmetChallenge(self):
+        for c in self._Challenges:
+            if not c.GetMet():
+                return self.__ConvertConditionToString(c.GetCondition())
+
 
     def GetLockDetails(self):
         LockDetails = "\n" + "CURRENT LOCK" + "\n" + "------------" + "\n"
