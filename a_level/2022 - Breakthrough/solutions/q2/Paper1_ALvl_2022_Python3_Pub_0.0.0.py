@@ -31,9 +31,14 @@ class Breakthrough():
                 while not self.__LockSolved and not self.__GameOver:
                     print()
                     print("Current score:", self.__Score)
+                    # after score
+                    print("Cards in Deck:", self.__Deck.GetNumberOfCards())
+                    print("ToolCards in Deck:", self.__Deck.GetNumberOfToolCards())
+                    # before displays
                     print(self.__CurrentLock.GetLockDetails())
                     print(self.__Sequence.GetCardDisplay())
                     print(self.__Hand.GetCardDisplay())
+
                     MenuChoice = self.__GetChoice()
                     if MenuChoice == "D":
                         print(self.__Discard.GetCardDisplay())
@@ -411,6 +416,15 @@ class CardCollection():
     
     def GetNumberOfCards(self): 
         return len(self._Cards)
+    
+    def GetNumberOfToolCards(self):
+        # advanced version
+        # return len(card for card in self._Cards if card.GetDescription() in ["K", "F", "P"])
+        total = 0
+        for card in self._Cards:
+            if card.GetDescription() != "Dif":
+                total += 1
+        return total
 
     def Shuffle(self):
         for Count in range(10000):
