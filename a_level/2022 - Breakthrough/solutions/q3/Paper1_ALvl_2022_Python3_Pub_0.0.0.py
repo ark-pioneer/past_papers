@@ -21,7 +21,9 @@ class Breakthrough():
         self.__GameOver = False
         self.__CurrentLock = Lock()
         self.__LockSolved = False
+        self.__BlastingCaps = 1
         self.__LoadLocks()
+
     
     def PlayGame(self):
         if len(self.__Locks) > 0:
@@ -45,6 +47,26 @@ class Breakthrough():
                             self.__GetCardFromDeck(CardChoice)
                         elif DiscardOrPlay == "P":
                             self.__PlayCardToSequence(CardChoice)
+                    elif MenuChoice == "B":
+                        if self.__BlastingCaps == 0:
+                            print("No more Blasting Caps available")
+                        else:
+                            print("Choose an unmet challenge")
+                            print(self.__CurrentLock.GetLockDetails())
+                            ChallengeChoice = input("Which do you choose?")
+                            print("Blasting challenge...")
+                            try:
+                                if int(ChallengeChoice) in range(1, self.__CurrentLock.GetNumberOfChallenges() + 1):
+                                    if not self.__CurrentLock.GetChallengeMet(int(ChallengeChoice)-1):
+                                        self.__CurrentLock.SetChallengeMet(int(ChallengeChoice)-1, True)
+                                        print("Challenge successfully blasted!...")
+                                    else:
+                                        raise ValueError(f"Invalid: Challenge {ChallengeChoice} already met!")
+                                else:
+                                    raise ValueError(f"Invalid: {ChallengeChoice} is not a valid challenge number!")
+                            except ValueError as e:
+                                print(e, "Blasting Cap fizzled out.")
+                                self.__BlastingCaps -= 1
                     if self.__CurrentLock.GetLockSolved():
                         self.__LockSolved = True
                         self.__ProcessLockSolved()
@@ -207,7 +229,7 @@ class Breakthrough():
 
     def __GetChoice(self):
         print()
-        Choice = input("(D)iscard inspect, (U)se card:> ").upper()
+        Choice = input("(D)iscard inspect, (U)se card, Use (B)lasting Cap:> ").upper()
         return Choice
     
     def __AddDifficultyCardsToDeck(self):
