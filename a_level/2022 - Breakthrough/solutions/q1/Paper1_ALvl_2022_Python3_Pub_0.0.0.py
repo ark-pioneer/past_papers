@@ -202,7 +202,12 @@ class Breakthrough():
         return Choice
 
     def __GetDiscardOrPlayChoice(self):
-        Choice = input("(D)iscard or (P)lay?:> ").upper()
+        while True:
+            Choice = input("(D)iscard or (P)lay?:> ").upper()
+            if Choice == "D" or Choice == "P":
+                break
+            else:
+                print("Invalid option")
         return Choice
 
     def __GetChoice(self):
