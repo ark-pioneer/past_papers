@@ -114,7 +114,7 @@ class Breakthrough():
                 else:
                     CardNumber = int(Item[4:6])
                 if Item[0: 3] == "Dif":
-                    CurrentCard = DifficultyCard(CardNumber)
+                    CurrentCard = TrapCard(CardNumber)
                     CardCol.AddCard(CurrentCard)
                 else:
                     CurrentCard = ToolCard(Item[0], Item[2], CardNumber)
@@ -173,9 +173,12 @@ class Breakthrough():
 
     def __GetCardFromDeck(self, CardChoice):
         if self.__Deck.GetNumberOfCards() > 0:
-            if self.__Deck.GetCardDescriptionAt(0) == "Dif":
+            topcard_desc = self.__Deck.GetCardDescriptionAt(0)
+            if topcard_desc == "Dif" or topcard_desc == "Trp":
                 CurrentCard = self.__Deck.RemoveCard(self.__Deck.GetCardNumberAt(0))
                 print()
+                if topcard_desc == "Trp":
+                    print("Trap!")
                 print("Difficulty encountered!")
                 print(self.__Hand.GetCardDisplay())
                 print("To deal with this you need to either lose a key ", end='')
@@ -308,12 +311,20 @@ class Lock():
 
     def SetChallengeMet(self, Pos, Value):
         self._Challenges[Pos].SetMet(Value)
-    
+
     def GetChallengeMet(self, Pos): 
         return self._Challenges[Pos].GetMet()
-    
+
     def GetNumberOfChallenges(self): 
         return len(self._Challenges)
+
+    def AllChallengesUnmet(self):
+        return len([c for c in self._Challenges if not c.GetMet()]) == self.GetNumberOfChallenges()
+
+    def ResetRandomChallenge(self):
+        metChallenges = [c for c in self._Challenges if c.GetMet()]
+        randomIndex = random.randint(0, len(metChallenges)-1)
+        metChallenges[randomIndex].SetMet(False)
 
 class Card():
     _NextCardNumber = 0
@@ -391,6 +402,21 @@ class DifficultyCard(Card):
             CardToMove = Deck.RemoveCard(Deck.GetCardNumberAt(0))
             Discard.AddCard(CardToMove)
             Count += 1
+
+class TrapCard(DifficultyCard):
+    def __init__(self, num):
+        self._CardType = "Trp"
+        self._CardNumber = num
+
+    def Process(self, Deck, Discard, Hand, Sequence, CurrentLock, Choice, CardChoice):
+        print("Trap Card activated!")
+        if not CurrentLock.GetLockSolved():
+            if CurrentLock.AllChallengesUnmet():
+                print("No Challenges met. Reverting back to Difficulty Card process")
+                super().Process(Deck, Discard, Hand, Sequence, CurrentLock, Choice, CardChoice)
+            else:
+                print("Trap Card executed. A random met challenge has been unmet instead.")
+                CurrentLock.ResetRandomChallenge()
 
 class CardCollection():
     def __init__(self, N):
